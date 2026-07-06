@@ -5,6 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>지윤님의 제주 3박 4일 여행</title>
+
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e4d4a">
+
+    <!-- iOS support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="제주여행">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <style>
         :root {
             --primary: #1e4d4a;
@@ -286,6 +297,125 @@
         #toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
+        }
+
+        /* PWA Install Banner Style */
+        .pwa-install-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(180px);
+            width: calc(100% - 32px);
+            max-width: 448px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(58, 175, 169, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pwa-install-banner.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .pwa-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pwa-banner-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .pwa-banner-text {
+            flex: 1;
+        }
+
+        .pwa-banner-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 2px 0;
+        }
+
+        .pwa-banner-desc {
+            font-size: 11px;
+            color: var(--text-light);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .pwa-banner-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 18px;
+            color: #a0aec0;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 4px;
+        }
+
+        .pwa-banner-action {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .pwa-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pwa-btn-install {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .pwa-btn-install:active {
+            background-color: var(--primary);
+        }
+
+        /* Guide text specifically for iOS */
+        .ios-guide {
+            font-size: 12px;
+            color: var(--text);
+            background: rgba(58, 175, 169, 0.08);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 600;
+            width: 100%;
+        }
+        
+        .ios-share-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233aafa9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -635,6 +765,21 @@
 
     <div id="toast">주소가 클립보드에 복사되었습니다!</div>
 
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
+        <button class="pwa-banner-close" onclick="dismissPwaBanner()">×</button>
+        <div class="pwa-banner-content">
+            <img src="icon-192.png" alt="App Icon" class="pwa-banner-icon">
+            <div class="pwa-banner-text">
+                <p class="pwa-banner-title">제주 여행 앱 설치</p>
+                <p class="pwa-banner-desc" id="pwa-banner-desc">홈 화면에 추가하여 앱처럼 실시간 일정을 편하게 확인해 보세요!</p>
+            </div>
+        </div>
+        <div class="pwa-banner-action" id="pwa-banner-action">
+            <button class="pwa-btn pwa-btn-install" id="pwa-install-btn">앱 설치</button>
+        </div>
+    </div>
+
     <script>
         function openDay(evt, dayName) {
             var i, contentSections, tabButtons;
@@ -668,6 +813,76 @@
             var toast = document.getElementById("toast");
             toast.classList.add("show");
             setTimeout(function () { toast.classList.remove("show"); }, 2000);
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(function(reg) { console.log('Service Worker Registered'); })
+                    .catch(function(err) { console.log('Service Worker Failed to Register', err); });
+            });
+        }
+
+        // PWA Install Banner Logic
+        let deferredPrompt;
+        const pwaBanner = document.getElementById('pwa-install-banner');
+        const pwaInstallBtn = document.getElementById('pwa-install-btn');
+        const pwaDesc = document.getElementById('pwa-banner-desc');
+        const pwaAction = document.getElementById('pwa-banner-action');
+
+        const isDismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        function detectDevice() {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            const isIos = /iphone|ipad|ipod/.test(userAgent);
+            const isSafari = /safari/.test(userAgent) && !/chrome|crios|fxios|opr|mercury/.test(userAgent);
+            return { isIos, isSafari };
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            if (!isDismissed && !isStandalone) {
+                setTimeout(() => {
+                    pwaBanner.classList.add('show');
+                }, 2000);
+            }
+        });
+
+        if (pwaInstallBtn) {
+            pwaInstallBtn.addEventListener('click', () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                    pwaBanner.classList.remove('show');
+                });
+            });
+        }
+
+        // iOS Specific Logic
+        const device = detectDevice();
+        if (device.isIos && !isStandalone && !isDismissed) {
+            pwaDesc.innerHTML = 'Safari 브라우저에서 아래 공유 버튼을 누르고 <strong>"홈 화면에 추가"</strong>를 클릭하면 앱으로 설치됩니다!';
+            pwaAction.innerHTML = '<div class="ios-guide"><span class="ios-share-icon"></span> 공유 -> 홈 화면에 추가</div>';
+            
+            setTimeout(() => {
+                pwaBanner.classList.add('show');
+            }, 2000);
+        }
+
+        function dismissPwaBanner() {
+            pwaBanner.classList.remove('show');
+            localStorage.setItem('pwa-install-dismissed', 'true');
         }
     </script>
 
