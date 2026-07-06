@@ -6,29 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>지유니의 제주 3박 4일 여행</title>
 
-    <!-- KakaoTalk Outlink Redirect -->
-    <script>
-        (function() {
-            var userAgent = navigator.userAgent.toLowerCase();
-            if (userAgent.indexOf('kakaotalk') !== -1) {
-                var targetUrl = window.location.href;
-                if (userAgent.indexOf('iphone') !== -1 || userAgent.indexOf('ipad') !== -1 || userAgent.indexOf('ipod') !== -1) {
-                    window.location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(targetUrl);
-                } else {
-                    var cleanUrl = targetUrl.replace(/https?:\/\//i, "");
-                    window.location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
-                }
-                
-                document.addEventListener("DOMContentLoaded", function() {
-                    var overlay = document.getElementById('kakaotalk-overlay');
-                    if (overlay) {
-                        overlay.style.display = 'flex';
-                    }
-                });
-            }
-        })();
-    </script>
-
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e4d4a">
@@ -440,109 +417,10 @@
             background-repeat: no-repeat;
             vertical-align: middle;
         }
-
-        /* KakaoTalk Overlay Style */
-        .kakaotalk-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #f4f7f6;
-            z-index: 100000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .kakaotalk-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px 24px;
-            width: 100%;
-            max-width: 360px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid #edf2f7;
-        }
-
-        .kakaotalk-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .kakaotalk-card h2 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 0 0 10px 0;
-        }
-
-        .kakaotalk-card p {
-            font-size: 13px;
-            color: var(--text-light);
-            margin: 0 0 20px 0;
-            line-height: 1.5;
-        }
-
-        .kakaotalk-spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(58, 175, 169, 0.1);
-            border-top-color: var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s infinite linear;
-            margin: 0 auto 24px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .kakaotalk-guide {
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: left;
-            border: 1px solid #edf2f7;
-        }
-
-        .kakaotalk-guide p {
-            font-size: 12px;
-            color: var(--text);
-            margin: 0 0 6px 0;
-            line-height: 1.4;
-        }
-
-        .kakaotalk-guide p:last-child {
-            margin-bottom: 0;
-        }
-        
-        .kakaotalk-guide strong {
-            color: var(--accent);
-        }
     </style>
 </head>
 
 <body>
-
-    <!-- KakaoTalk Browser Detector Overlay -->
-    <div id="kakaotalk-overlay" class="kakaotalk-overlay" style="display: none;">
-        <div class="kakaotalk-card">
-            <div class="kakaotalk-icon">📱</div>
-            <h2>외부 브라우저 연결 중</h2>
-            <p>더 편리한 앱 사용 및 홈 화면 추가(PWA)를 위해 사파리/크롬 브라우저로 이동합니다.</p>
-            <div class="kakaotalk-spinner"></div>
-            <div class="kakaotalk-guide">
-                <p><strong>자동으로 이동하지 않는 경우:</strong></p>
-                <p>1. 우측 상단의 <strong>더보기 (⋮ 또는 ⋯)</strong> 버튼 클릭</p>
-                <p>2. <strong>'다른 브라우저로 열기'</strong> 또는 <strong>'Safari로 열기'</strong> 선택</p>
-            </div>
-        </div>
-    </div>
 
     <div class="phone-wrapper">
         <header>
